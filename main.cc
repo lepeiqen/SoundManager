@@ -9,7 +9,7 @@ using namespace oyoung::audio;
 int main(int argc, char *argv[])
 {
 
-    const char *file = argc > 1 ? argv[1]: "/home/oyoung/Music/normal_fault.wav"; //"/usr/local/tmp/tts_in.wav";
+    const char *file = argc > 1 ? argv[1]: "/home/lpq/music/kexi.wav"; //must be *.wav;
     auto wav = StreamCreator::createSoundStream(file);
     if(wav) {
         SoundPlayer player("default");
