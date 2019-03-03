@@ -36,4 +36,4 @@ listing4-rec: listing4-rec.c
 #	$(CC) $(CPPFLAGS) -std=gnu++11 unorderedWordCount.cpp -o $@
 
 clean :
-	rm -fr *.o $(TARGET) *.wav
+	rm -fr *.o $(TARGET)
