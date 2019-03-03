@@ -76,7 +76,7 @@ void SNDWAV_Record(SNDPCMContainer_t *sndpcm, WAVContainer_t *wav, int fd)
 			break;
 		
 		if (write(fd, sndpcm->data_buf, c) != c) {
-			fprintf(stderr, "Error SNDWAV_Record[write]/n");
+			fprintf(stderr, "Error SNDWAV_Record[write]\n");
 			exit(-1);
 		}
  
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 	SNDPCMContainer_t record;
 	
 	if (argc != 2) {
-		fprintf(stderr, "Usage: ./lrecord <FILENAME>/n");
+		fprintf(stderr, "Usage: ./lrecord <FILENAME>\n");
 		return -1;
 	}
 	
@@ -107,22 +107,22 @@ int main(int argc, char *argv[])
 	}
  
 	if (snd_output_stdio_attach(&record.log, stderr, 0) < 0) {
-		fprintf(stderr, "Error snd_output_stdio_attach/n");
+		fprintf(stderr, "Error snd_output_stdio_attach\n");
 		goto Err;
 	}
  
 	if (snd_pcm_open(&record.handle, devicename, SND_PCM_STREAM_CAPTURE, 0) < 0) {
-		fprintf(stderr, "Error snd_pcm_open [ %s]/n", devicename);
+		fprintf(stderr, "Error snd_pcm_open [ %s]\n", devicename);
 		goto Err;
 	}
  
 	if (SNDWAV_PrepareWAVParams(&wav) < 0) {
-		fprintf(stderr, "Error SNDWAV_PrepareWAVParams/n");
+		fprintf(stderr, "Error SNDWAV_PrepareWAVParams\n");
 		goto Err;
 	}
  
 	if (SNDWAV_SetParams(&record, &wav) < 0) {
-		fprintf(stderr, "Error set_snd_pcm_params/n");
+		fprintf(stderr, "Error set_snd_pcm_params\n");
 		goto Err;
 	}
 	snd_pcm_dump(record.handle, record.log);

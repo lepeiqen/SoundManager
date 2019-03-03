@@ -48,9 +48,9 @@ ssize_t SNDWAV_ReadPcm(SNDPCMContainer_t *sndpcm, size_t rcount)
 			snd_pcm_wait(sndpcm->handle, 1000);
 		} else if (r == -EPIPE) {
 			snd_pcm_prepare(sndpcm->handle);
-			fprintf(stderr, "<<<<<<<<<<<<<<< Buffer Underrun >>>>>>>>>>>>>>>/n");
+			fprintf(stderr, "<<<<<<<<<<<<<<< Buffer Underrun >>>>>>>>>>>>>>>\n");
 		} else if (r == -ESTRPIPE) {
-			fprintf(stderr, "<<<<<<<<<<<<<<< Need suspend >>>>>>>>>>>>>>>/n");
+			fprintf(stderr, "<<<<<<<<<<<<<<< Need suspend >>>>>>>>>>>>>>>\n");
 		} else if (r < 0) {
 			fprintf(stderr, "Error snd_pcm_writei: [%s]", snd_strerror(r));
 			exit(-1);
@@ -83,9 +83,9 @@ ssize_t SNDWAV_WritePcm(SNDPCMContainer_t *sndpcm, size_t wcount)
 			snd_pcm_wait(sndpcm->handle, 1000);
 		} else if (r == -EPIPE) {
 			snd_pcm_prepare(sndpcm->handle);
-			fprintf(stderr, "<<<<<<<<<<<<<<< Buffer Underrun >>>>>>>>>>>>>>>/n");
+			fprintf(stderr, "<<<<<<<<<<<<<<< Buffer Underrun >>>>>>>>>>>>>>>\n");
 		} else if (r == -ESTRPIPE) {			
-			fprintf(stderr, "<<<<<<<<<<<<<<< Need suspend >>>>>>>>>>>>>>>/n");		
+			fprintf(stderr, "<<<<<<<<<<<<<<< Need suspend >>>>>>>>>>>>>>>\n");		
 		} else if (r < 0) {
 			fprintf(stderr, "Error snd_pcm_writei: [%s]", snd_strerror(r));
 			exit(-1);
@@ -111,29 +111,29 @@ int SNDWAV_SetParams(SNDPCMContainer_t *sndpcm, WAVContainer_t *wav)
 	
 	/* Init hwparams with full configuration space */
 	if (snd_pcm_hw_params_any(sndpcm->handle, hwparams) < 0) {
-		fprintf(stderr, "Error snd_pcm_hw_params_any/n");
+		fprintf(stderr, "Error snd_pcm_hw_params_any\n");
 		goto ERR_SET_PARAMS;
 	}
  
 	if (snd_pcm_hw_params_set_access(sndpcm->handle, hwparams, SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
-		fprintf(stderr, "Error snd_pcm_hw_params_set_access/n");
+		fprintf(stderr, "Error snd_pcm_hw_params_set_access\n");
 		goto ERR_SET_PARAMS;
 	}
  
 	/* Set sample format */
 	if (SNDWAV_P_GetFormat(wav, &format) < 0) {
-		fprintf(stderr, "Error get_snd_pcm_format/n");
+		fprintf(stderr, "Error get_snd_pcm_format\n");
 		goto ERR_SET_PARAMS;
 	}
 	if (snd_pcm_hw_params_set_format(sndpcm->handle, hwparams, format) < 0) {
-		fprintf(stderr, "Error snd_pcm_hw_params_set_format/n");
+		fprintf(stderr, "Error snd_pcm_hw_params_set_format\n");
 		goto ERR_SET_PARAMS;
 	}
 	sndpcm->format = format;
  
 	/* Set number of channels */
 	if (snd_pcm_hw_params_set_channels(sndpcm->handle, hwparams, LE_SHORT(wav->format.channels)) < 0) {
-		fprintf(stderr, "Error snd_pcm_hw_params_set_channels/n");
+		fprintf(stderr, "Error snd_pcm_hw_params_set_channels\n");
 		goto ERR_SET_PARAMS;
 	}
 	sndpcm->channels = LE_SHORT(wav->format.channels);
@@ -142,41 +142,41 @@ int SNDWAV_SetParams(SNDPCMContainer_t *sndpcm, WAVContainer_t *wav)
 	/* by the hardware, use nearest possible rate.         */ 
 	exact_rate = LE_INT(wav->format.sample_rate);
 	if (snd_pcm_hw_params_set_rate_near(sndpcm->handle, hwparams, &exact_rate, 0) < 0) {
-		fprintf(stderr, "Error snd_pcm_hw_params_set_rate_near/n");
+		fprintf(stderr, "Error snd_pcm_hw_params_set_rate_near\n");
 		goto ERR_SET_PARAMS;
 	}
 	if (LE_INT(wav->format.sample_rate) != exact_rate) {
-		fprintf(stderr, "The rate %d Hz is not supported by your hardware./n ==> Using %d Hz instead./n", 
+		fprintf(stderr, "The rate %d Hz is not supported by your hardware./n ==> Using %d Hz instead.\n", 
 			LE_INT(wav->format.sample_rate), exact_rate);
 	}
  
 	if (snd_pcm_hw_params_get_buffer_time_max(hwparams, &buffer_time, 0) < 0) {
-		fprintf(stderr, "Error snd_pcm_hw_params_get_buffer_time_max/n");
+		fprintf(stderr, "Error snd_pcm_hw_params_get_buffer_time_max\n");
 		goto ERR_SET_PARAMS;
 	}
 	if (buffer_time > 500000) buffer_time = 500000;
 	period_time = buffer_time / 4;
  
 	if (snd_pcm_hw_params_set_buffer_time_near(sndpcm->handle, hwparams, &buffer_time, 0) < 0) {
-		fprintf(stderr, "Error snd_pcm_hw_params_set_buffer_time_near/n");
+		fprintf(stderr, "Error snd_pcm_hw_params_set_buffer_time_near\n");
 		goto ERR_SET_PARAMS;
 	}
  
 	if (snd_pcm_hw_params_set_period_time_near(sndpcm->handle, hwparams, &period_time, 0) < 0) {
-		fprintf(stderr, "Error snd_pcm_hw_params_set_period_time_near/n");
+		fprintf(stderr, "Error snd_pcm_hw_params_set_period_time_near\n");
 		goto ERR_SET_PARAMS;
 	}
  
 	/* Set hw params */
 	if (snd_pcm_hw_params(sndpcm->handle, hwparams) < 0) {
-		fprintf(stderr, "Error snd_pcm_hw_params(handle, params)/n");
+		fprintf(stderr, "Error snd_pcm_hw_params(handle, params)\n");
 		goto ERR_SET_PARAMS;
 	}
  
 	snd_pcm_hw_params_get_period_size(hwparams, &sndpcm->chunk_size, 0);	
 	snd_pcm_hw_params_get_buffer_size(hwparams, &sndpcm->buffer_size);
 	if (sndpcm->chunk_size == sndpcm->buffer_size) {		
-		fprintf(stderr, ("Can't use period equal to buffer size (%lu == %lu)/n"), sndpcm->chunk_size, sndpcm->buffer_size);		
+		fprintf(stderr, ("Can't use period equal to buffer size (%lu == %lu)\n"), sndpcm->chunk_size, sndpcm->buffer_size);		
 		goto ERR_SET_PARAMS;
 	}
  
@@ -188,7 +188,7 @@ int SNDWAV_SetParams(SNDPCMContainer_t *sndpcm, WAVContainer_t *wav)
 	/* Allocate audio data buffer */
 	sndpcm->data_buf = (uint8_t *)malloc(sndpcm->chunk_bytes);
 	if (!sndpcm->data_buf) {
-		fprintf(stderr, "Error malloc: [data_buf]/n");
+		fprintf(stderr, "Error malloc: [data_buf]\n");
 		goto ERR_SET_PARAMS;
 	}
  

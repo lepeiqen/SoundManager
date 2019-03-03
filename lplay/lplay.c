@@ -57,7 +57,7 @@ void SNDWAV_Play(SNDPCMContainer_t *sndpcm, WAVContainer_t *wav, int fd)
 				break;
 			ret = SNDWAV_P_SaveRead(fd, sndpcm->data_buf + load, c);
 			if (ret < 0) {
-				fprintf(stderr, "Error safe_read/n");
+				fprintf(stderr, "Error safe_read\n");
 				exit(-1);
 			}
 			if (ret == 0)
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 	SNDPCMContainer_t playback;
 	
 	if (argc != 2) {
-		fprintf(stderr, "Usage: ./lplay <FILENAME>/n");
+		fprintf(stderr, "Usage: ./lplay <FILENAME>\n");
 		return -1;
 	}
 	
@@ -95,27 +95,27 @@ int main(int argc, char *argv[])
 	filename = argv[1];
 	fd = open(filename, O_RDONLY);
 	if (fd < 0) {
-		fprintf(stderr, "Error open [%s]/n", filename);
+		fprintf(stderr, "Error open [%s]\n", filename);
 		return -1;
 	}
 	
 	if (WAV_ReadHeader(fd, &wav) < 0) {
-		fprintf(stderr, "Error WAV_Parse [%s]/n", filename);
+		fprintf(stderr, "Error WAV_Parse [%s]\n", filename);
 		goto Err;
 	}
  
 	if (snd_output_stdio_attach(&playback.log, stderr, 0) < 0) {
-		fprintf(stderr, "Error snd_output_stdio_attach/n");
+		fprintf(stderr, "Error snd_output_stdio_attach\n");
 		goto Err;
 	}
  
 	if (snd_pcm_open(&playback.handle, devicename, SND_PCM_STREAM_PLAYBACK, 0) < 0) {
-		fprintf(stderr, "Error snd_pcm_open [ %s]/n", devicename);
+		fprintf(stderr, "Error snd_pcm_open [ %s]\n", devicename);
 		goto Err;
 	}
  
 	if (SNDWAV_SetParams(&playback, &wav) < 0) {
-		fprintf(stderr, "Error set_snd_pcm_params/n");
+		fprintf(stderr, "Error set_snd_pcm_params\n");
 		goto Err;
 	}
 	snd_pcm_dump(playback.handle, playback.log);
